@@ -1,0 +1,13 @@
+{
+	"destinationIP": "10.21.32.55", 
+	"destinationPort": 8080,
+	"destinationProtocol": "http",
+	"destinationIPAuth": "127.0.0.1",
+	"destinationPortAuth": 8000,
+	"destinationProtocolAuth": "http",
+	"lsitingIP": "0.0.0.0",
+	"lsitingPort": 8899,
+	"users_db": "users.db",
+	"sessionsSecret": "OSV_Secret_key",
+	"sessionsDuration": 7
+}
