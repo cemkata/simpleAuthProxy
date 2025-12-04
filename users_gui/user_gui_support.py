@@ -98,7 +98,7 @@ def execSQL(sql_query_str):
             sqliteConnection.close()
 
 def encryptPass(clear_txt_pass):
-    hash_object = hashlib.sha1(clear_txt_pass)
+    hash_object = hashlib.sha1(clear_txt_pass.encode())
     return hash_object.hexdigest()
 
 def initDB():
