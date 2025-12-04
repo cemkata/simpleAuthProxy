@@ -121,4 +121,4 @@ COMMIT;'''
 
 if __name__ == '__main__':
     initDB()
-    app.run(debug=False, port=8000)
+    app.run(debug=False, port=data['destinationPortAuth'], host=data['destinationIPAuth'])
