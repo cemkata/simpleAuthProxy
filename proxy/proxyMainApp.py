@@ -31,7 +31,7 @@ if __name__ == '__main__':
   waitingTime = 0.5
   while True:
       try:
-         _ = requests.get(f'{data['destinationProtocolAuth']}://{data['destinationIPAuth']}:{data['destinationPortAuth']}/protected', allow_redirects=False)
+         _ = requests.get(f"{data['destinationProtocolAuth']}://{data['destinationIPAuth']}:{data['destinationPortAuth']}/protected", allow_redirects=False)
          break
       except:
          if retries > 20:
