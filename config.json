@@ -9,5 +9,6 @@
 	"lsitingPort": 80,
 	"users_db": "users.db",
 	"sessionsSecret": "OSV_Secret_key",
-	"sessionsDuration": 7
+	"sessionsDuration": 7,
+	"customMsg":"<h1 class='title'>OSV team materials</h1><h2 class='subtitle'>If you have password please login</h2>"
 }

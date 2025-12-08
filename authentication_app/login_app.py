@@ -29,7 +29,7 @@ class User(UserMixin):
 def home_page():
     if not request.remote_addr.startswith('127.'):
         return ''
-    return render_template("index.html",current_user=current_user)
+    return render_template("index.html",current_user=current_user, welcome_msg=data['customMsg'])
 
 @app.route("/login", methods=['GET','POST'])
 def login_page():
@@ -49,12 +49,12 @@ def login_page():
             session_duration = datetime.now() + timedelta(days=session_in_days)
             login_user(user, duration=session_duration)
             return redirect("/")
-            return render_template("index.html", current_user=current_user)
+            return render_template("index.html", current_user=current_user, welcome_msg=data['customMsg'])
         elif user_find:
             error_message = '\\nWrong password'
         else:
             error_message = "\\nUnknown username"
-        return render_template("login.html",error_message=error_message,current_user=current_user)
+        return render_template("login.html",error_message=error_message,current_user=current_user, welcome_msg=data['customMsg'])
     return render_template("login.html")
 
 @login_manager.user_loader
