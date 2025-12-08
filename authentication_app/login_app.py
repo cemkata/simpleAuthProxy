@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, abort
 from flask_login import LoginManager, UserMixin, login_user, current_user, login_required, logout_user
 import os
 
@@ -27,21 +27,25 @@ class User(UserMixin):
 
 @app.route("/")
 def home_page():
+    if not request.remote_addr.startswith('127.'):
+        return ''
     return render_template("index.html",current_user=current_user)
 
 @app.route("/login", methods=['GET','POST'])
 def login_page():
+    if not request.remote_addr.startswith('127.'):
+        abort(404)
     error_message = ""
     if request.method == 'POST':
-        if current_user.is_active: 
+        if current_user.is_active:
             return redirect("/")
             return 'has logined'
         username = request.form['username']
         password = encryptPass(request.form['password'])
         user_find = execSQL(f"""SELECT `PASSWORD` FROM `users_tbl` WHERE `NAME`='{username}';""")
         if user_find and user_find[0][0]==password:
-            user = User()  
-            user.id = username 
+            user = User()
+            user.id = username
             session_duration = datetime.now() + timedelta(days=session_in_days)
             login_user(user, duration=session_duration)
             return redirect("/")
@@ -52,28 +56,33 @@ def login_page():
             error_message = "\\nUnknown username"
         return render_template("login.html",error_message=error_message,current_user=current_user)
     return render_template("login.html")
-    
-@login_manager.user_loader  
-def user_loader(username):  
-    user = User()  
+
+@login_manager.user_loader
+def user_loader(username):
+    user = User()
     user.id = username
-    return user 
-    
-@app.route('/logout')  
-def logout_page():  
-    if current_user.is_active: 
-        logout_user()  
+    return user
+
+@app.route('/logout')
+def logout_page():
+    if not request.remote_addr.startswith('127.'):
+        abort(404)
+    if current_user.is_active:
+        logout_user()
         return redirect("/")
         return 'Logged out'
     else:
         return redirect("/")
         return "you aren't login"
 
-@app.route('/protected')  
+@app.route('/protected')
 @login_required  # intumu.com
-def protected_page():  
-    if current_user.is_active:  
-        return 'Logged in as: ' + current_user.id + 'Login is_active:True'
+def protected_page():
+    if not request.remote_addr.startswith('127.'):
+        abort(404)
+    if current_user.is_active:
+        #return 'Logged in as: ' + current_user.id + 'Login is_active: True Logged from IP: ' + request.remote_addr
+        return ''
 
 def execSQL(sql_query_str):
     try:
