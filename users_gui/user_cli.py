@@ -186,8 +186,11 @@ class UserView(Frame):
         # Do standard reset to clear out form, then populate with new data.
         super(UserView, self).reset()
         tmpData = self._model.get_current_user()
-        self.data = {'name': tmpData['NAME'], 'id': tmpData['ID']}
-        self.nameBox.readonly = True
+        try:
+            self.data = {'name': tmpData['NAME'], 'id': tmpData['ID']}
+            self.nameBox.readonly = True
+        except KeyError:
+            pass
 
     def _ok(self):
         self.save()
