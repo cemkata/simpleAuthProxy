@@ -2,7 +2,7 @@
 import logging
 import requests
 from http.client import responses as http_responses
-from typing import List, Tuple, Dict, Optional
+from typing import List, Tuple, Dict, Optional, Any
 
 from proxy.http.parser import HttpParser
 from proxy.http.server import HttpWebServerBasePlugin, httpProtocolTypes
