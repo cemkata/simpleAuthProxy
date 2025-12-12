@@ -28,13 +28,14 @@ if __name__ == '__main__':
     f.write(plugin)
   
   retries = 0
-  waitingTime = 0.5
+  waitingTime = 1
   while True:
       try:
          _ = requests.get(f"{data['destinationProtocolAuth']}://{data['destinationIPAuth']}:{data['destinationPortAuth']}/protected", allow_redirects=False)
          break
       except:
-         if retries > 20:
+         if retries > 300:
+         # 300 seconds are 5 minutes
             print("Failed to start after "+str(waitingTime * retries)+" seconds")
             print("And "+str(retries)+" retries!")
             exit(255)
