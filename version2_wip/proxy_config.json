@@ -1,0 +1,13 @@
+{
+  "destination_server": {
+      "protocol": "http",
+      "ip": "127.0.0.1",
+      "port": "80",
+      "auth_username": "password",
+      "auth_password": "username"
+  },
+  "proxy_server": {
+      "ip": "127.0.0.1",
+      "port": "8080"
+  }
+}
