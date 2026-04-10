@@ -85,6 +85,9 @@ def process_index():
 @app.route('/<path:url_path>', methods = ['POST', 'GET', 'PUT', 'DELETE', 'PATCH'])
 def process_request(url_path):
     url, authenticated = check_login(request)
+    if not authenticated:
+        if url_path.startswith('static/'):
+            url = f'{auch_protocol}://{auch_server}:{auch_port}/{url_path}'
     origin_server = ""
     server_request_headers = {}
     for header in request.headers:
