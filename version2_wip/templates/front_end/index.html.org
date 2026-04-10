@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="bg" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Бърз речник</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <div class="header-row">
+      <div>
+        <h1>📚 Бърз речник</h1>
+        <p>Въведете дума и вижте нейното значение, произношение и примери.</p>
+      </div>
+      <button id="themeToggle" class="theme-toggle" aria-label="Превключване на тема">🌙 Тъмна тема</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="search">
+      <label for="wordInput" class="visually-hidden">Въведете дума</label>
+      <div class="search-box">
+        <input id="wordInput" type="text" placeholder="Въведете дума, напр. serendipity" autocomplete="off" />
+        <div class="lang-row">
+          <label for="langSelect" class="visually-hidden">Език</label>
+          <select id="langSelect" class="lang-select" aria-label="Език">
+            <option value="en" selected>Английски (en)</option>
+            <option value="bg">Български (bg)</option>
+            <option value="es">Испански (es)</option>
+            <option value="fr">Френски (fr)</option>
+            <option value="de">Немски (de)</option>
+            <option value="it">Италиански (it)</option>
+            <option value="ru">Руски (ru)</option>
+          </select>
+        </div>
+        <ul id="suggestions" class="suggestions" role="listbox" aria-label="Предложения"></ul>
+      </div>
+      <button id="searchBtn" aria-label="Търсене">Търсене</button>
+    </section>
+
+    <div class="layout">
+      <section id="result" class="card" aria-live="polite" aria-atomic="true"></section>
+
+      <aside class="card history">
+        <div class="history-header">
+          <h2>🕘 История на търсенията</h2>
+          <button id="clearHistory" class="badge" aria-label="Изчистване на история">Изчистване</button>
+        </div>
+        <ul id="historyList" class="history-list"></ul>
+      </aside>
+    </div>
+
+    <!-- ✍️ Редактор на дефиниции -->
+    <section class="card editor" aria-label="Редактор">
+      <div class="editor-header">
+        <h2>✍️ Редактор на дефиниции</h2>
+        <div class="editor-toolbar" role="toolbar" aria-label="Форматиране">
+          <button class="tool-btn" data-cmd="bold" title="Получер (Ctrl+B)"><strong>B</strong></button>
+          <button class="tool-btn" data-cmd="italic" title="Курсив (Ctrl+I)"><em>I</em></button>
+          <button class="tool-btn" data-cmd="underline" title="Подчертаване (Ctrl+U)"><u>U</u></button>
+          <span class="sep"></span>
+          <button id="btnHistory" class="tool-btn" title="История">🕘 История</button>
+          <button id="btnClear" class="tool-btn" title="Изчистване">🧹</button>
+          <button id="btnSave" class="tool-btn accent" title="Запази">💾 Запази</button>
+        </div>
+      </div>
+      <div id="editorArea" class="editor-area" contenteditable="true" aria-multiline="true" spellcheck="true" placeholder="Въведете или редактирайте текст на дефиницията…"></div>
+      <div class="editor-footer">
+        <label for="revNote" class="visually-hidden">Бележка към версията</label>
+        <input id="revNote" class="note-input" type="text" maxlength="240"
+               placeholder="Бележка към версията (по избор)…" />
+        <small>Съвет: Ctrl+B / Ctrl+I / Ctrl+U; съдържанието се запазва локално и може да се синхронизира към бекенд.</small>
+        <small id="syncStatus" style="margin-left:8px"></small>
+        <div class="editor-actions" style="margin-top:6px; display:flex; gap:6px;">
+          <button id="btnSyncNow" class="tool-btn" title="Синхронизирай сега">🔄 Синхронизирай сега</button>
+          <button id="btnClearQueue" class="tool-btn" title="Изчисти опашка">🗑️ Изчисти опашка</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Модал: История на редакции -->
+    <div id="historyModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
+      <div class="modal-dialog card">
+        <div class="modal-header">
+          <h3 id="historyTitle">🕘 История на редакции</h3>
+          <button id="closeHistory" class="tool-btn" aria-label="Затвори">✖</button>
+        </div>
+        <div class="modal-body">
+          <div class="tabs">
+            <button id="tabPreview" class="tab active">Преглед</button>
+            <button id="tabDiff" class="tab">Диф</button>
+            <button id="tabChooser" class="tab">Селекция по секции</button>
+          </div>
+          <div class="history-columns">
+            <div class="rev-list">
+              <ul id="revList" class="rev-list-ul"></ul>
+            </div>
+            <div class="rev-preview">
+              <h4>Преглед</h4>
+              <div id="revPreview" class="preview-area"></div>
+              <div id="revNotePreview" class="rev-meta" style="margin-top:6px"></div>
+            </div>
+          </div>
+          <div id="conflictDiff" class="diff-area hidden"></div>
+          <div id="conflictChooser" class="chooser-area hidden">
+            <p class="rev-meta">Изберете коя версия да се запази за всяка секция. По подразбиране се избира секцията, която е променена на сървъра.</p>
+            <div id="chooserList"></div>
+            <div class="rev-meta" style="margin-top:8px">Преглед на резултата от селекцията (преди прилагане):</div>
+            <div id="chooserPreview" class="preview-area"></div>
+            <div style="text-align:right;margin-top:8px">
+              <button id="btnUndo" class="tool-btn" disabled>↩️ Отмени</button>
+              <button id="btnRedo" class="tool-btn" disabled>↪️ Повтори</button>
+              <button id="btnApplySelection" class="tool-btn accent">Приложи избор</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btnRestore" class="tool-btn accent">Възстанови</button>
+          <button id="btnDeleteRev" class="tool-btn">Изтрий</button>
+          <span style="flex:1"></span>
+          <button id="btnExportHtml" class="tool-btn">Експорт HTML</button>
+          <button id="btnExportMd" class="tool-btn">Експорт Markdown</button>
+          <button id="btnExportRev" class="tool-btn">Експорт JSON</button>
+        </div>
+      </div>
+    </div>
+
+  
+    <div id="conflictModal" class="modal hidden" tabindex="0" role="dialog" aria-modal="true" aria-labelledby="conflictTitle">
+      <div class="modal-dialog card">
+        <div class="modal-header">
+          <h3 id="conflictTitle">⚠️ Конфликт на версии</h3>
+          <button id="closeConflict" class="tool-btn" aria-label="Затвори">✖</button>
+        </div>
+        <div class="modal-body">
+          <div class="tabs">
+            <button id="tabPreview" class="tab active">Преглед</button>
+            <button id="tabDiff" class="tab">Диф</button>
+            <button id="tabChooser" class="tab">Селекция по секции</button>
+          </div>
+          <div class="conflict-grid">
+            <div>
+              <h4>Моята версия</h4>
+              <div id="conflictMine" class="preview-area"></div>
+            </div>
+            <div>
+              <h4>Сървърна версия</h4>
+              <div id="conflictServer" class="preview-area"></div>
+              <div id="conflictServerNote" class="rev-meta" style="margin-top:6px"></div>
+              <div id="conflictServerVer" class="rev-meta" style="margin-top:4px"></div>
+            </div>
+          </div>
+          <div id="conflictDiff" class="diff-area hidden"></div>
+          <div id="conflictChooser" class="chooser-area hidden">
+            <p class="rev-meta">Изберете коя версия да се запази за всяка секция. По подразбиране се избира секцията, която е променена на сървъра.</p>
+            <div id="chooserList"></div>
+            <div class="rev-meta" style="margin-top:8px">Преглед на резултата от селекцията (преди прилагане):</div>
+            <div id="chooserPreview" class="preview-area"></div>
+            <div style="text-align:right;margin-top:8px">
+              <button id="btnUndo" class="tool-btn" disabled>↩️ Отмени</button>
+              <button id="btnRedo" class="tool-btn" disabled>↪️ Повтори</button>
+              <button id="btnApplySelection" class="tool-btn accent">Приложи избор</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btnKeepMine" class="tool-btn accent">Задръж моята</button>
+          <button id="btnKeepServer" class="tool-btn">Задръж сървърната</button>
+          <button id="btnSmartMerge" class="tool-btn accent">Слей по секции (умен)</button>
+          <button id="btnMerge" class="tool-btn">Бърз слей (моето + сървърното)</button>
+          <button id="btnCancelConflict" class="tool-btn">Отказ</button>
+        </div>
+      </div>
+    </div>
+    
+  </main>
+
+  <footer>
+    <p>
+      Данни: <a href="https://dictionaryapi.dev/" target="_blank" rel="noopener">Free Dictionary API</a> (EN) и <a href="https://en.wiktionary.org/w/api.php" target="_blank" rel="noopener">Wiktionary / MediaWiki API</a>.
+      Подсказвания: <a href="https://www.mediawiki.org/wiki/API:Opensearch" target="_blank" rel="noopener">OpenSearch</a>.
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

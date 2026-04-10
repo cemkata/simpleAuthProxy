@@ -1,0 +1,9 @@
+<!-- templates/index.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+{% autoescape false %}
+    {{ welcome_msg }}
+{% endautoescape %}
+{% endblock %}

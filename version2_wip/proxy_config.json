@@ -1,13 +1,26 @@
 {
-  "destination_server": {
+  "authentication_server": {
       "protocol": "http",
       "ip": "127.0.0.1",
       "port": "80",
       "auth_username": "password",
-      "auth_password": "username"
+      "auth_password": "username",
+      "sessions": {
+        "users_db": "users.db",
+        "sessionsSecret": "OSV_Secret_key",
+        "sessionsDuration": 7,
+        "customMsg":"<h1 class='title'>OSV team materials</h1><h2 class='subtitle'>If you have password please login</h2>"
+      }
   },
   "proxy_server": {
       "ip": "127.0.0.1",
-      "port": "8080"
+      "port": "8080",
+      "startup_retries": "300",
+	  "waiting_time": "1"
+  },
+  "destination_server":{
+      "protocol": "http",
+      "ip": "127.0.0.1",
+      "port": "80"
   }
 }

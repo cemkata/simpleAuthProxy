@@ -7,10 +7,12 @@ with open("proxy_config.json", "r", encoding="utf-8") as f:
 
 app = Flask(__name__)
 
-app.config['BASIC_AUTH_USERNAME'] = data['destination_server']['auth_username']
-app.config['BASIC_AUTH_PASSWORD'] = data['destination_server']['auth_password']
+app.config['BASIC_AUTH_USERNAME'] = data['authentication_server']['auth_username']
+app.config['BASIC_AUTH_PASSWORD'] = data['authentication_server']['auth_password']
 
-basic_auth = BasicAuth(app)
+#basic_auth = BasicAuth(app)
+basic_auth = BasicAuth()
+basic_auth.init_app(app)
 
 @app.route('/secret')
 @basic_auth.required
@@ -19,5 +21,5 @@ def secret_view():
 
 
 if __name__ == '__main__':
-    app.run(host=data['destination_server']['ip'], port=int(data['destination_server']['port']), debug=True)
+    app.run(host=data['authentication_server']['ip'], port=int(data['authentication_server']['port']), debug=True)
     # In production, run via a WSGI server (gunicorn, waitress, uWSGI)
