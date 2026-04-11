@@ -38,5 +38,12 @@ pip install requirements_proxy.txt
 pip install requirements_users_cli.txt [optional used on for cliGUI under linux]  
 
 Edit the proxy_config.json  
+Add users via:  
++ user_cli.py - for Linux (requers)
++ user_gui.py - for Windows (needs Tinkler, usualy installed by default)
 
 Start the proxy via `python3 starter.py`
+
+For service use:  
++ nssm - windows  
++ foo.service - Linux 
