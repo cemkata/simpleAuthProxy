@@ -1,4 +1,0 @@
-[done] Port the login aplication.
-Logic to process unlogged user request to static content as js/css/imgs
-
-Test if after login all works
