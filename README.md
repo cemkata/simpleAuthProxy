@@ -34,9 +34,9 @@ proxy_server destination_server port -- port of the protected web server
 proxy_server destination_server protocol -- http/https  
 
 **How to use:**
-pip install requirements_proxy.txt
-pip install requirements_users_cli.txt [optional used on for cliGUI under linux]
+pip install requirements_proxy.txt  
+pip install requirements_users_cli.txt [optional used on for cliGUI under linux]  
 
-Edit the proxy_config.json
+Edit the proxy_config.json  
 
 Start the proxy via `python3 starter.py`
