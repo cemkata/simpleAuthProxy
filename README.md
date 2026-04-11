@@ -33,7 +33,7 @@ proxy_server destination_server ip -- address of the end web server
 proxy_server destination_server port -- port of the protected web server  
 proxy_server destination_server protocol -- http/https  
 
-** How to use:
+**How to use:
 pip install requirements_proxy.txt
 pip install requirements_users_cli.txt [optional used on for cliGUI under linux]
 
