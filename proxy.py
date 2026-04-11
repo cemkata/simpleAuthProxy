@@ -142,7 +142,8 @@ def process_request(url_path):
     except Exception as e:
         resp = Response(json.dumps({'error': str(e)}), status=502, content_type='application/json')
         return cors(resp)
-if __name__ == '__main__':
+
+def start():
     retries = 0
     max_retries = int(data['proxy_server']['startup_retries'])
     waitingTime = int(data['proxy_server']['waiting_time'])
@@ -159,3 +160,6 @@ if __name__ == '__main__':
            time.sleep(waitingTime)
     app.run(host=data['proxy_server']['ip'], port=int(data['proxy_server']['port']), debug=True)
     # In production, run via a WSGI server (gunicorn, waitress, uWSGI)
+
+if __name__ == '__main__':
+    start()

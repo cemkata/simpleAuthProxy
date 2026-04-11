@@ -134,7 +134,10 @@ CREATE TABLE IF NOT EXISTS "users_tbl" (
 );
 COMMIT;'''
 
-if __name__ == '__main__':
+def start():
     initDB()
     app.run(host=data['authentication_server']['ip'], port=int(data['authentication_server']['port']), debug=True)
     # In production, run via a WSGI server (gunicorn, waitress, uWSGI)
+
+if __name__ == '__main__':
+    start()
