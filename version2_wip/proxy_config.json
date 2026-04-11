@@ -2,7 +2,7 @@
   "authentication_server": {
       "protocol": "http",
       "ip": "127.0.0.1",
-      "port": "80",
+      "port": "8088",
       "auth_username": "password",
       "auth_password": "username",
       "sessions": {
@@ -16,11 +16,11 @@
       "ip": "127.0.0.1",
       "port": "8080",
       "startup_retries": "300",
-	  "waiting_time": "1"
-  },
-  "destination_server":{
-      "protocol": "http",
-      "ip": "127.0.0.1",
-      "port": "80"
+	  "waiting_time": "1",
+  	  "destination_server":{
+  	      "protocol": "http",
+  	      "ip": "127.0.0.1",
+  	      "port": "80"
+  	  }
   }
 }
